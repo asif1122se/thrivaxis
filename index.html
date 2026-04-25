@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Thrivaxis — Under Construction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & Base ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:   #080E1D;
+  --s:      #0D1628;
+  --s2:     #111E35;
+  --brand:  #00C8A0;
+  --brand2: #00A884;
+  --aqua:   #7FFFD4;
+  --white:  #FFFFFF;
+  --muted:  #8A9BB8;
+  --border: rgba(0,200,160,0.14);
+}
+html{scroll-behavior:smooth;height:100%}
+body{
+  background:var(--navy);
+  color:var(--white);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ─── Custom cursor ─── */
+#cur-ring{
+  position:fixed;width:32px;height:32px;
+  border:1.5px solid rgba(0,200,160,0.55);
+  border-radius:50%;pointer-events:none;
+  z-index:9999;transform:translate(-50%,-50%);
+  transition:width .25s,height .25s,background .25s,border-color .25s;
+  will-change:transform;
+}
+#cur-dot{
+  position:fixed;width:6px;height:6px;
+  background:linear-gradient(135deg,#7FFFD4,#00A884);
+  border-radius:50%;pointer-events:none;
+  z-index:9999;transform:translate(-50%,-50%);
+  will-change:transform;
+}
+
+/* ─── Ambient background ─── */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+
+/* Grid overlay */
+.bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,200,160,0.028) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,200,160,0.028) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+
+/* Ambient orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(80px)}
+.orb1{
+  width:700px;height:700px;
+  top:-20%;right:-15%;
+  background:radial-gradient(circle,rgba(0,200,160,0.10) 0%,transparent 65%);
+  animation:orb1 22s ease-in-out infinite alternate;
+}
+.orb2{
+  width:500px;height:500px;
+  bottom:-15%;left:-10%;
+  background:radial-gradient(circle,rgba(127,255,212,0.07) 0%,transparent 65%);
+  animation:orb2 17s ease-in-out infinite alternate;
+}
+.orb3{
+  width:350px;height:350px;
+  top:40%;left:40%;
+  background:radial-gradient(circle,rgba(0,200,160,0.05) 0%,transparent 65%);
+  animation:orb3 25s ease-in-out infinite alternate;
+}
+
+@keyframes orb1{from{transform:translate(0,0)}to{transform:translate(40px,-30px)}}
+@keyframes orb2{from{transform:translate(0,0)}to{transform:translate(-30px,25px)}}
+@keyframes orb3{from{transform:translate(0,0)}to{transform:translate(20px,-20px)}}
+
+/* Floating particles */
+.particle{
+  position:absolute;border-radius:50%;
+  background:var(--brand);
+  animation:float linear infinite;
+  opacity:0;
+}
+@keyframes float{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:.3}
+  100%{transform:translateY(-100px) scale(1);opacity:0}
+}
+
+/* ─── Main layout ─── */
+.page{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 24px;
+  gap:0;
+}
+
+/* ─── Logo ─── */
+.logo{
+  display:inline-flex;align-items:center;gap:12px;
+  text-decoration:none;user-select:none;
+  margin-bottom:56px;
+  opacity:0;animation:fadeUp .8s ease forwards;
+  animation-delay:.1s;
+}
+.logo-icon svg{display:block}
+.logo-wordmark{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:28px;letter-spacing:-0.04em;line-height:1;
+  white-space:nowrap;
+}
+.logo-wordmark .w{color:#fff}
+.logo-wordmark .a{
+  background:linear-gradient(90deg,#7FFFD4 0%,#00C8A0 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ─── Hero content ─── */
+.content{
+  text-align:center;max-width:680px;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+
+/* Status badge */
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,200,160,0.07);
+  border:1px solid rgba(127,255,212,0.25);
+  border-radius:100px;padding:6px 18px 6px 12px;
+  margin-bottom:40px;
+  opacity:0;animation:fadeUp .8s ease forwards;animation-delay:.2s;
+}
+.badge-dot{
+  width:8px;height:8px;background:var(--aqua);border-radius:50%;
+  animation:pulseDot 2s ease-in-out infinite;
+  box-shadow:0 0 8px rgba(127,255,212,0.6);
+}
+@keyframes pulseDot{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.4);opacity:.5}
+}
+.badge span{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--aqua);letter-spacing:1.5px;text-transform:uppercase;
+}
+
+/* ─── Animated chevron icon ─── */
+.chevron-wrap{
+  position:relative;width:120px;height:120px;
+  margin-bottom:44px;
+  opacity:0;animation:fadeUp .8s ease forwards;animation-delay:.25s;
+}
+.chevron-bg-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(0,200,160,0.15);
+  animation:ringPulse 3s ease-in-out infinite;
+}
+.chevron-bg-ring:nth-child(2){
+  inset:-12px;border-color:rgba(0,200,160,0.08);
+  animation-delay:.5s;
+}
+.chevron-bg-ring:nth-child(3){
+  inset:-24px;border-color:rgba(0,200,160,0.04);
+  animation-delay:1s;
+}
+@keyframes ringPulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.04);opacity:.6}
+}
+.chevron-inner{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,200,160,0.16),rgba(0,168,132,0.04));
+  border-radius:50%;
+  border:1px solid rgba(0,200,160,0.25);
+  display:flex;align-items:center;justify-content:center;
+  animation:iconFloat 4s ease-in-out infinite;
+}
+@keyframes iconFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+.chevron-inner svg{animation:chevronGlow 3s ease-in-out infinite}
+@keyframes chevronGlow{
+  0%,100%{filter:drop-shadow(0 0 8px rgba(0,200,160,0.4))}
+  50%{filter:drop-shadow(0 0 18px rgba(127,255,212,0.7))}
+}
+
+/* ─── Heading ─── */
+.heading{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(40px,8vw,72px);
+  line-height:.95;letter-spacing:-0.04em;
+  margin-bottom:8px;
+  opacity:0;animation:fadeUp .9s ease forwards;animation-delay:.35s;
+}
+.heading .line{display:block}
+.heading .grad{
+  background:linear-gradient(90deg,#7FFFD4 0%,#00C8A0 60%,#00A884 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(0,200,160,0.35));
+}
+
+/* ─── Sub text ─── */
+.sub{
+  font-family:'DM Sans',sans-serif;font-size:17px;
+  color:var(--muted);line-height:1.65;max-width:480px;
+  margin:20px 0 44px;
+  opacity:0;animation:fadeUp .9s ease forwards;animation-delay:.45s;
+}
+
+/* ─── Progress bar ─── */
+.progress-wrap{
+  width:100%;max-width:440px;
+  opacity:0;animation:fadeUp .9s ease forwards;animation-delay:.55s;
+  margin-bottom:40px;
+}
+.progress-labels{
+  display:flex;justify-content:space-between;
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.progress-track{
+  width:100%;height:4px;
+  background:rgba(0,200,160,0.1);
+  border-radius:100px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,#7FFFD4,#00C8A0,#00A884);
+  border-radius:100px;
+  animation:progressLoad 2.5s cubic-bezier(.25,.46,.45,.94) forwards;
+  animation-delay:.8s;
+  position:relative;overflow:hidden;
+}
+.progress-fill::after{
+  content:'';position:absolute;top:0;left:-100%;
+  width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
+  animation:shimmer 2s ease-in-out infinite;
+  animation-delay:1.5s;
+}
+@keyframes progressLoad{to{width:72%}}
+@keyframes shimmer{to{left:200%}}
+
+/* ─── Notify form ─── */
+.notify{
+  width:100%;max-width:440px;
+  opacity:0;animation:fadeUp .9s ease forwards;animation-delay:.65s;
+}
+.notify p{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:14px;text-align:center;
+}
+.notify-form{
+  display:flex;gap:8px;
+  background:rgba(13,22,40,0.9);
+  border:1px solid rgba(0,200,160,0.2);
+  border-radius:14px;padding:6px 6px 6px 18px;
+  transition:border-color .3s;
+}
+.notify-form:focus-within{border-color:rgba(0,200,160,0.5)}
+.notify-input{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:'DM Sans',sans-serif;font-size:14px;
+  color:var(--white);
+}
+.notify-input::placeholder{color:rgba(138,155,184,0.5)}
+.notify-btn{
+  flex-shrink:0;
+  background:linear-gradient(135deg,#7FFFD4,#00A884);
+  color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;
+  font-size:13px;border:none;border-radius:10px;
+  padding:10px 22px;cursor:none;
+  transition:opacity .2s,transform .2s;
+  white-space:nowrap;
+}
+.notify-btn:hover{opacity:.9;transform:translateY(-1px)}
+.notify-btn:active{transform:scale(.97)}
+
+/* Success state */
+.notify-success{
+  display:none;align-items:center;justify-content:center;gap:10px;
+  background:rgba(0,200,160,0.06);border:1px solid rgba(0,200,160,0.25);
+  border-radius:14px;padding:14px 24px;
+}
+.notify-success.show{display:flex;animation:fadeIn .4s ease}
+.check-icon{
+  width:20px;height:20px;background:linear-gradient(135deg,#7FFFD4,#00A884);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.notify-success p{
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  color:var(--aqua);letter-spacing:0;text-transform:none;
+}
+
+/* ─── Social links ─── */
+.socials{
+  display:flex;gap:12px;margin-top:36px;
+  opacity:0;animation:fadeUp .9s ease forwards;animation-delay:.75s;
+}
+.social-btn{
+  width:40px;height:40px;
+  background:rgba(13,22,40,0.8);
+  border:1px solid rgba(0,200,160,0.15);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  text-decoration:none;color:var(--muted);
+  transition:all .25s;cursor:none;
+}
+.social-btn:hover{
+  border-color:rgba(0,200,160,0.45);color:var(--brand);
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,200,160,0.12);
+}
+.social-btn svg{width:16px;height:16px}
+
+/* ─── Footer strip ─── */
+.foot{
+  position:fixed;bottom:0;left:0;right:0;
+  padding:16px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid rgba(0,200,160,0.08);
+  background:rgba(8,14,29,0.7);backdrop-filter:blur(16px);
+  z-index:10;flex-wrap:wrap;gap:8px;
+  opacity:0;animation:fadeIn 1s ease forwards;animation-delay:1s;
+}
+.foot-left{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:rgba(138,155,184,0.5);letter-spacing:1px;
+}
+.foot-right{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:rgba(138,155,184,0.5);letter-spacing:1px;
+  display:flex;align-items:center;gap:6px;
+}
+.foot-dot{
+  width:5px;height:5px;background:var(--brand);border-radius:50%;
+  animation:pulseDot 2.5s ease-in-out infinite;
+}
+
+/* ─── Utility animations ─── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(28px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ─── Scanning line effect ─── */
+.scan-line{
+  position:fixed;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent 0%,rgba(0,200,160,0.5) 50%,transparent 100%);
+  animation:scan 6s linear infinite;
+  pointer-events:none;z-index:2;opacity:.4;
+}
+@keyframes scan{
+  from{top:0}
+  to{top:100vh}
+}
+
+/* ─── Responsive ─── */
+@media(max-width:600px){
+  .heading{font-size:clamp(32px,10vw,48px)}
+  .notify-form{flex-direction:column;padding:12px}
+  .notify-btn{width:100%;padding:12px}
+  .foot{display:none}
+  .logo{margin-bottom:40px}
+  .chevron-wrap{width:88px;height:88px;margin-bottom:36px}
+}
+</style>
+</head>
+<body>
+
+<!-- Scanning line -->
+<div class="scan-line"></div>
+
+<!-- Custom cursor -->
+<div id="cur-ring"></div>
+<div id="cur-dot"></div>
+
+<!-- Background -->
+<div class="bg" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <!-- Particles injected by JS -->
+</div>
+
+<!-- Main page -->
+<main class="page" role="main">
+
+  <!-- Logo -->
+  <a class="logo" href="/" aria-label="Thrivaxis home">
+    <span class="logo-icon" aria-hidden="true">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <defs>
+          <linearGradient id="chvG" x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0%" stop-color="#7FFFD4"/>
+            <stop offset="100%" stop-color="#00A884"/>
+          </linearGradient>
+          <linearGradient id="chvBG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="rgba(0,200,160,0.16)"/>
+            <stop offset="100%" stop-color="rgba(0,168,132,0.03)"/>
+          </linearGradient>
+        </defs>
+        <rect width="36" height="36" rx="9" fill="url(#chvBG)"/>
+        <rect x=".5" y=".5" width="35" height="35" rx="8.5"
+          stroke="rgba(0,200,160,0.25)" stroke-width="1"/>
+        <path d="M6 24 L18 10 L30 24"
+          stroke="url(#chvG)" stroke-width="4.5"
+          stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M10 29 L18 20 L26 29"
+          stroke="url(#chvG)" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.35"/>
+      </svg>
+    </span>
+    <span class="logo-wordmark" aria-label="Thrivaxis">
+      <span class="w">Thriv</span><span class="a">axis</span>
+    </span>
+  </a>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Badge -->
+    <div class="badge" role="status" aria-label="Site status: Under maintenance">
+      <span class="badge-dot" aria-hidden="true"></span>
+      <span>Under Maintenance</span>
+    </div>
+
+    <!-- Animated chevron mark -->
+    <div class="chevron-wrap" aria-hidden="true">
+      <div class="chevron-bg-ring"></div>
+      <div class="chevron-bg-ring"></div>
+      <div class="chevron-bg-ring"></div>
+      <div class="chevron-inner">
+        <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+          <defs>
+            <linearGradient id="bigChv" x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop offset="0%" stop-color="#7FFFD4"/>
+              <stop offset="100%" stop-color="#00A884"/>
+            </linearGradient>
+          </defs>
+          <path d="M8 36 L26 14 L44 36"
+            stroke="url(#bigChv)" stroke-width="5"
+            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M14 44 L26 30 L38 44"
+            stroke="url(#bigChv)" stroke-width="3.5"
+            stroke-linecap="round" stroke-linejoin="round"
+            fill="none" opacity="0.35"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="heading" aria-label="We're building something great">
+      <span class="line">We're building</span>
+      <span class="line grad">something great.</span>
+    </h1>
+
+    <!-- Sub -->
+    <p class="sub">
+      Thrivaxis is undergoing scheduled maintenance as we put the finishing touches
+      on our new website. We'll be back very soon with something exceptional.
+    </p>
+
+    <!-- Progress bar -->
+    <div class="progress-wrap" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" aria-label="Website completion progress">
+      <div class="progress-labels">
+        <span>Progress</span>
+        <span id="pct">72%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Notify form -->
+    <div class="notify">
+      <p>Get notified when we launch</p>
+      <div id="notify-form-wrap">
+        <form class="notify-form" onsubmit="handleSubmit(event)" novalidate>
+          <input
+            class="notify-input"
+            type="email"
+            placeholder="Enter your email address"
+            required
+            aria-label="Email address for launch notification"
+            id="email-input"
+          />
+          <button class="notify-btn" type="submit">Notify me →</button>
+        </form>
+      </div>
+      <div class="notify-success" id="success-msg" role="alert" aria-live="polite">
+        <span class="check-icon" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6 L5 9 L10 3" stroke="#080E1D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <p>You're on the list — we'll notify you on launch day!</p>
+      </div>
+    </div>
+
+    Social links
+    <div class="socials" aria-label="Social media links">
+      <a class="social-btn" href="https://linkedin.com/company/thrivaxis" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+      <a class="social-btn" href="https://twitter.com/thrivaxis" target="_blank" rel="noopener" aria-label="X / Twitter">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      </a>
+      <a class="social-btn" href="mailto:ali@thrivaxis.com" aria-label="Email us">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+      </a>
+      <a class="social-btn" href="https://upwork.com" target="_blank" rel="noopener" aria-label="Upwork profile">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.561 13.158c-1.102 0-2.135-.467-3.074-1.227l.228-1.076.008-.042c.207-1.143.849-3.06 2.839-3.06a2.705 2.705 0 0 1 2.703 2.703 2.707 2.707 0 0 1-2.704 2.702zm0-8.14c-2.539 0-4.51 1.649-5.31 4.366-1.22-1.834-2.148-4.036-2.687-5.892H8.556v7.112a2.551 2.551 0 0 1-2.547 2.548 2.55 2.55 0 0 1-2.545-2.548V3.492H1.456v7.112c0 2.914 2.37 5.303 5.281 5.303 2.913 0 5.283-2.389 5.283-5.303v-1.19c.529 1.107 1.182 2.229 1.974 3.221l-1.673 7.873h2.797l1.213-5.71c1.063.679 2.285 1.109 3.671 1.109 3.547 0 6.195-2.497 6.195-5.732C24 7.345 21.549 5.018 18.561 5.018z"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<!-- Footer strip -->
+<footer class="foot" aria-label="Site footer">
+  <span class="foot-left">© 2025 Thrivaxis LLC · California, USA</span>
+  <span class="foot-right">
+    <span class="foot-dot" aria-hidden="true"></span>
+    Maintenance in progress
+  </span>
+</footer>
+
+<script>
+/* ── Cursor ── */
+const ring = document.getElementById('cur-ring');
+const dot  = document.getElementById('cur-dot');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left  = mx + 'px';
+  dot.style.top   = my + 'px';
+}, {passive:true});
+
+/* Smooth ring follow */
+(function lerp(){
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(lerp);
+})();
+
+/* Cursor expand on hover */
+document.querySelectorAll('a,button,.social-btn,.notify-btn').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    ring.style.width  = '48px';
+    ring.style.height = '48px';
+    ring.style.borderColor = 'rgba(0,200,160,0.85)';
+    ring.style.background  = 'rgba(0,200,160,0.06)';
+  });
+  el.addEventListener('mouseleave', () => {
+    ring.style.width  = '32px';
+    ring.style.height = '32px';
+    ring.style.borderColor = 'rgba(0,200,160,0.55)';
+    ring.style.background  = 'transparent';
+  });
+});
+
+/* ── Particles ── */
+const bg = document.querySelector('.bg');
+const PARTICLES = [
+  {w:3,h:3,l:12,dur:14,delay:0},
+  {w:2,h:2,l:25,dur:18,delay:2},
+  {w:4,h:4,l:38,dur:11,delay:1},
+  {w:2,h:2,l:52,dur:16,delay:3.5},
+  {w:3,h:3,l:65,dur:13,delay:.5},
+  {w:2,h:2,l:76,dur:19,delay:4},
+  {w:3,h:3,l:84,dur:12,delay:2.5},
+  {w:2,h:2,l:91,dur:17,delay:1.5},
+  {w:4,h:4,l:45,dur:15,delay:5},
+  {w:2,h:2,l:8, dur:20,delay:3},
+];
+PARTICLES.forEach(p => {
+  const el = document.createElement('div');
+  el.className = 'particle';
+  el.style.cssText = `
+    width:${p.w}px;height:${p.h}px;
+    left:${p.l}%;
+    animation-duration:${p.dur}s;
+    animation-delay:${p.delay}s;
+    opacity:0;
+  `;
+  bg.appendChild(el);
+});
+
+/* ── Notify form ── */
+function handleSubmit(e){
+  e.preventDefault();
+  const input = document.getElementById('email-input');
+  const val   = input.value.trim();
+  if(!val || !val.includes('@')) {
+    input.style.borderColor = 'rgba(255,100,100,0.5)';
+    input.style.animation   = 'shake .3s ease';
+    setTimeout(()=>{
+      input.style.borderColor = '';
+      input.style.animation   = '';
+    }, 600);
+    return;
+  }
+  document.getElementById('notify-form-wrap').style.display = 'none';
+  const s = document.getElementById('success-msg');
+  s.classList.add('show');
+}
+
+/* ── Animated percentage counter ── */
+(function countUp(){
+  let current = 0;
+  const target = 72;
+  const el     = document.getElementById('pct');
+  const step   = () => {
+    if(current < target){
+      current++;
+      el.textContent = current + '%';
+      setTimeout(step, 28);
+    }
+  };
+  setTimeout(step, 900);
+})();
+
+/* ── Shake keyframe injection ── */
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    75%{transform:translateX(6px)}
+  }
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
