@@ -107,16 +107,16 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {/* Mobile menu — rendered in DOM so transition works, visibility toggled via classes */}
+      {/* Mobile menu — positioned absolutely so it overlay content without taking up flow height */}
       <div
         id="mobile-menu"
         aria-hidden={!open}
         className={cn(
-          'border-border border-t bg-bg/95 backdrop-blur-xl md:hidden',
-          'transition-[opacity,transform] duration-200',
+          'absolute inset-x-0 top-full border-border border-b bg-bg/95 backdrop-blur-xl md:hidden',
+          'transition-[opacity,transform,visibility] duration-200 ease-out',
           open
-            ? 'pointer-events-auto translate-y-0 opacity-100'
-            : 'pointer-events-none -translate-y-2 opacity-0',
+            ? 'pointer-events-auto translate-y-0 opacity-100 visible'
+            : 'pointer-events-none -translate-y-2 opacity-0 invisible',
         )}
       >
         <nav aria-label="Primary mobile" className="px-6 py-6 sm:px-8">
