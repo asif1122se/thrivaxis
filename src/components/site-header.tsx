@@ -1,6 +1,7 @@
 'use client';
 
 import { ArrowUpRight, Menu, Xmark } from 'iconoir-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -44,14 +45,15 @@ export function SiteHeader() {
       )}
     >
       <div className="mx-auto flex h-16 w-full max-w-[88rem] items-center justify-between px-6 sm:px-8 lg:px-12">
-        {/* Logo — uses the static PNG lockup */}
+        {/* Logo — uses static PNG lockup */}
         <Link href="/" aria-label={`${site.name} home`} className="flex items-center">
-          <img
-            src="/logo/logo-dark.png?v=forged"
+          <Image
+            src="/logo/logo-dark.png"
             alt={site.name}
             width={160}
             height={60}
             className="h-12 w-auto object-contain"
+            priority
           />
         </Link>
 
@@ -115,8 +117,8 @@ export function SiteHeader() {
           'absolute inset-x-0 top-full border-border border-b bg-bg/95 backdrop-blur-xl md:hidden',
           'transition-[opacity,transform,visibility] duration-200 ease-out',
           open
-            ? 'pointer-events-auto translate-y-0 opacity-100 visible'
-            : 'pointer-events-none -translate-y-2 opacity-0 invisible',
+            ? 'pointer-events-auto visible translate-y-0 opacity-100'
+            : 'pointer-events-none invisible -translate-y-2 opacity-0',
         )}
       >
         <nav aria-label="Primary mobile" className="px-6 py-6 sm:px-8">

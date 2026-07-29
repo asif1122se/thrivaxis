@@ -340,6 +340,7 @@ ${cellClasses}
           width={size}
           height={size}
           style={{ display: 'block', overflow: 'visible' }}
+          aria-hidden="true"
         >
           <Grads lId={`${lId}L`} dId={`${dId}L`} />
           <g className={bladeCls}>
@@ -356,6 +357,7 @@ ${cellClasses}
           width={size}
           height={size}
           style={{ display: 'block', overflow: 'visible' }}
+          aria-hidden="true"
         >
           <Grads lId={`${lId}R`} dId={`${dId}R`} />
           <g className={bladeCls}>

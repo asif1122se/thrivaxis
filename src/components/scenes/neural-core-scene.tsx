@@ -115,9 +115,11 @@ export function NeuralCoreScene() {
         that refracts the environment — without it the ball is a perfect window
         and completely invisible. We keep resolution at 256 (default is 1024)
         which cuts GPU texture memory by 16× with no perceptible quality loss
-        at this display size.
+        at this display size. Self-hosted rather than drei's `preset` (which
+        fetches from raw.githack.com — a preview CDN not meant for production,
+        and known to 403/block requests from some networks).
       */}
-      <Environment preset="city" resolution={256} />
+      <Environment files="/hdri/potsdamer_platz_1k.hdr" resolution={256} />
       <pointLight position={[0, 0, 6]} intensity={4} color="#00f0ff" distance={20} decay={2} />
       <pointLight position={[4, -4, 4]} intensity={2} color="#ffffff" distance={15} decay={2} />
 

@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Cursor } from '@/components/primitives/cursor';
@@ -60,10 +62,30 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: site.name,
+  legalName: site.legalName,
+  url: site.url,
+  description: site.description,
+  email: site.contact.email,
+  address: {
+    '@type': 'PostalAddress',
+    addressCountry: 'US',
+  },
+  sameAs: [`https://twitter.com/${site.social.twitter.replace('@', '')}`],
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={cn(fontVariables, 'h-full antialiased')}>
       <body className="relative flex min-h-full flex-col bg-bg font-sans text-ink">
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: static, non-user-controlled JSON-LD
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <a
           href="#main"
           className="sr-only z-50 m-3 rounded-md bg-accent px-4 py-2 font-medium text-bg focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
@@ -79,6 +101,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </main>
           <AgenticNav />
         </LenisProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Container, Eyebrow, Section, Stack, Tag } from '@/components/primitives';
 
-const concepts = {
+export const concepts = {
   ledgermind: {
     industry: 'Fintech',
     title: 'LedgerMind',

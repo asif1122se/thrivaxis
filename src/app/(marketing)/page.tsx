@@ -1,12 +1,18 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRef } from 'react';
 import { StackMarquee } from '@/components/marketing/stack-marquee';
-import { NeuralCoreCanvas } from '@/components/scenes/neural-core-canvas';
+import { NeuralCoreFallback } from '@/components/scenes/neural-core-fallback';
 import { KineticTypography } from '@/components/ui/kinetic-typography';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
+
+const NeuralCoreCanvas = dynamic(
+  () => import('@/components/scenes/neural-core-canvas').then((mod) => mod.NeuralCoreCanvas),
+  { ssr: false, loading: () => <NeuralCoreFallback /> },
+);
 
 export default function MarketingPage() {
   const containerRef = useRef<HTMLDivElement>(null);
