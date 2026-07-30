@@ -9,7 +9,7 @@ export const contactSchema = z
     compliance: z.array(z.enum(['hipaa', 'soc2', 'gdpr', 'none'])).default(['none']),
     tier: z.enum(['prototype', 'production', 'enterprise']).default('production'),
     // Hidden honeypot field — real visitors never fill this in.
-    company_website: z.string().max(0).optional().or(z.literal('')),
+    company_website: z.string().optional().or(z.literal('')),
   })
   .refine((data) => Boolean(data.message || data.bottleneck), {
     message: 'Message is required',

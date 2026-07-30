@@ -49,7 +49,7 @@ export function AgenticTriage() {
           message: message.trim(),
           tier,
           compliance: ['none'],
-          company_website: honeypot,
+          company_website: honeypot.trim() ? honeypot.trim() : undefined,
         }),
       });
 
@@ -192,6 +192,7 @@ export function AgenticTriage() {
             {/* Honeypot field - hidden from real visitors */}
             <input
               type="text"
+              name="website_url_hp"
               value={honeypot}
               onChange={(e) => setHoneypot(e.target.value)}
               tabIndex={-1}

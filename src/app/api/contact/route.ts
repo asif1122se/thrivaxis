@@ -1,91 +1,96 @@
-import dns from 'node:dns';
+import https from 'node:https';
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { contactSchema } from '@/lib/contact-schema';
 import { buildAutoReplyEmail, buildLeadNotificationEmail } from '@/lib/email-templates';
 import { isRateLimited } from '@/lib/rate-limit';
 import { site } from '@/lib/site';
 
-// Force Node.js to resolve IPv4 addresses first to avoid macOS/undici IPv6 DNS lookup hangs
-try {
-  dns.setDefaultResultOrder('ipv4first');
-} catch {
-  // Ignore if unsupported in runtime
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+interface EmailPayload {
+  from: string;
+  to: string | string[];
+  reply_to?: string;
+  subject: string;
+  html: string;
 }
 
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Thrivaxis <onboarding@resend.dev>';
-const TO_EMAIL =
-  process.env.RESEND_TO_EMAIL || process.env.CONTACT_NOTIFICATION_EMAIL || site.contact.email;
+interface ResendResponse {
+  id?: string;
+  message?: string;
+  name?: string;
+  statusCode?: number;
+}
 
-/** Direct REST API fallback in case SDK fetch wrapper encounters network resolution issues */
-async function sendResendDirect(
-  apiKey: string,
-  payload: {
-    from: string;
-    to: string;
-    replyTo?: string;
-    subject: string;
-    html: string;
-  },
-) {
-  try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey.trim()}`,
-        'Content-Type': 'application/json',
+// ─── Core: native https POST to Resend REST API ───────────────────────────────
+// Uses Node's built-in https module, bypassing undici/fetch entirely.
+// This is more reliable than fetch() in environments where the IPv6 DNS
+// resolution hangs (macOS + VPN, some serverless cold-start configurations).
+
+function resendPost(apiKey: string, payload: EmailPayload): Promise<ResendResponse> {
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify(payload);
+
+    const req = https.request(
+      {
+        hostname: 'api.resend.com',
+        port: 443,
+        path: '/emails',
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(body),
+        },
       },
-      body: JSON.stringify({
-        from: payload.from,
-        to: payload.to,
-        reply_to: payload.replyTo,
-        subject: payload.subject,
-        html: payload.html,
-      }),
+      (res) => {
+        let raw = '';
+        res.on('data', (chunk: Buffer) => {
+          raw += chunk.toString();
+        });
+        res.on('end', () => {
+          try {
+            const json: ResendResponse = JSON.parse(raw);
+            resolve(json);
+          } catch {
+            resolve({ message: `Non-JSON response (${res.statusCode}): ${raw.slice(0, 200)}` });
+          }
+        });
+      },
+    );
+
+    req.setTimeout(12_000, () => {
+      req.destroy(new Error('Resend API request timed out after 12 s.'));
     });
 
-    const body = await response.json().catch(() => null);
-
-    if (!response.ok) {
-      return {
-        data: null,
-        error: {
-          message:
-            body?.message ||
-            body?.error?.message ||
-            `Resend API error (${response.status}): ${response.statusText}`,
-          name: body?.name || 'resend_api_error',
-        },
-      } as unknown as Awaited<ReturnType<Resend['emails']['send']>>;
-    }
-
-    return { data: body, error: null } as unknown as Awaited<ReturnType<Resend['emails']['send']>>;
-  } catch (err) {
-    return {
-      data: null,
-      error: {
-        message:
-          err instanceof Error
-            ? `Network error reaching Resend API: ${err.message}`
-            : 'Network connection failed reaching Resend API.',
-        name: 'network_error',
-      },
-    } as unknown as Awaited<ReturnType<Resend['emails']['send']>>;
-  }
+    req.on('error', (err: Error) => reject(err));
+    req.write(body);
+    req.end();
+  });
 }
 
+// ─── Helper: normalise the from string (strip stray outer quotes) ─────────────
+
+function sanitiseFrom(raw: string): string {
+  return raw.trim().replace(/^"(.*)"$/, '$1').trim();
+}
+
+// ─── Route Handler ────────────────────────────────────────────────────────────
+
 export async function POST(request: Request) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
 
   if (isRateLimited(ip)) {
     return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });
   }
 
+  // Parse body
   const body = await request.json().catch(() => null);
   if (!body) {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
+  // Validate
   const parsed = contactSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
@@ -94,107 +99,99 @@ export async function POST(request: Request) {
     );
   }
 
+  // Honeypot check
   const { company_website: honeypot, ...data } = parsed.data;
-  if (honeypot) {
-    // Bot filled the hidden field — pretend success, send nothing.
+  if (honeypot && typeof honeypot === 'string' && honeypot.trim().length > 0) {
+    console.warn('[Contact API] Honeypot triggered — skipping dispatch.');
     return NextResponse.json({ ok: true });
   }
 
+  // Environment
   const apiKey = process.env.RESEND_API_KEY?.trim();
+  const fromEmail = sanitiseFrom(
+    process.env.RESEND_FROM_EMAIL ?? `Thrivaxis <${site.contact.email}>`,
+  );
+  const toEmail =
+    process.env.RESEND_TO_EMAIL?.trim() ||
+    process.env.CONTACT_NOTIFICATION_EMAIL?.trim() ||
+    site.contact.email;
 
   if (!apiKey) {
     if (process.env.NODE_ENV === 'development') {
-      // biome-ignore lint/suspicious/noConsole: Dev mock intake logger
-      console.log('[DEV MOCK INTAKE] Contact submission received locally:', data);
+      // biome-ignore lint/suspicious/noConsole: dev mock
+      console.log('[DEV MOCK] Submission received (no RESEND_API_KEY):', data);
       return NextResponse.json({
         ok: true,
         devMode: true,
-        message: 'Dev mode: Submission logged to server terminal.',
+        message: 'Dev mode: RESEND_API_KEY not set. Submission logged to server terminal.',
       });
     }
-    console.error('RESEND_API_KEY is missing from environment variables.');
+    console.error('[Contact API] RESEND_API_KEY missing from environment.');
     return NextResponse.json(
-      { error: 'RESEND_API_KEY is not set in environment variables.' },
+      { error: 'Email service is not configured. Please contact us directly.' },
       { status: 503 },
     );
   }
 
-  try {
-    const resend = new Resend(apiKey);
+  // biome-ignore lint/suspicious/noConsole: diagnostic
+  console.log(`[Contact API] Dispatching → from: "${fromEmail}" | to: "${toEmail}"`);
 
-    // Primary delivery attempt via SDK
-    let lead = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: TO_EMAIL,
-      replyTo: data.email,
-      subject: `New project intake — ${data.name}`,
+  // ── 1. Lead notification ──────────────────────────────────────────────────
+  const tierLabel =
+    data.tier === 'prototype'
+      ? 'Prototype'
+      : data.tier === 'enterprise'
+        ? 'Enterprise'
+        : 'Production';
+
+  let leadResult: ResendResponse;
+  try {
+    leadResult = await resendPost(apiKey, {
+      from: fromEmail,
+      to: toEmail,
+      reply_to: data.email,
+      subject: `[Thrivaxis Lead] ${data.name} <${data.email}> — ${tierLabel} tier`,
       html: buildLeadNotificationEmail(data),
     });
-
-    // If SDK encounters a network error ('fetch failed' or 'Unable to fetch data'), retry with direct REST fetch
-    if (
-      lead.error &&
-      (lead.error.message?.includes('Unable to fetch data') ||
-        lead.error.message?.includes('fetch failed') ||
-        !lead.data)
-    ) {
-      lead = await sendResendDirect(apiKey, {
-        from: FROM_EMAIL,
-        to: TO_EMAIL,
-        replyTo: data.email,
-        subject: `New project intake — ${data.name}`,
-        html: buildLeadNotificationEmail(data),
-      });
-    }
-
-    if (lead.error) {
-      console.error('Resend lead email delivery failed:', lead.error);
-      return NextResponse.json(
-        {
-          error:
-            lead.error.message ||
-            'Failed to send email via Resend. Please check your API key and verified domain settings.',
-        },
-        { status: 502 },
-      );
-    }
-
-    // Courtesy auto-reply send
-    let autoReply = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: data.email,
-      subject: 'We received your message',
-      html: buildAutoReplyEmail(data),
-    });
-
-    if (
-      autoReply.error &&
-      (autoReply.error.message?.includes('Unable to fetch data') ||
-        autoReply.error.message?.includes('fetch failed'))
-    ) {
-      autoReply = await sendResendDirect(apiKey, {
-        from: FROM_EMAIL,
-        to: data.email,
-        subject: 'We received your message',
-        html: buildAutoReplyEmail(data),
-      });
-    }
-
-    if (autoReply.error) {
-      console.warn('Resend auto-reply notice:', autoReply.error.message);
-    }
-
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    console.error('Unhandled error sending contact email:', error);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('[Contact API] Lead email network error:', msg);
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong sending your message. Please try again.',
-      },
+      { error: `Network error reaching email service: ${msg}` },
       { status: 502 },
     );
   }
+
+  // Resend returns { id } on success and { name, message } on error.
+  if (!leadResult.id) {
+    const errMsg = leadResult.message ?? 'Resend rejected the lead email.';
+    console.error('[Contact API] Lead email rejected by Resend:', leadResult);
+    return NextResponse.json({ error: errMsg }, { status: 502 });
+  }
+
+  // biome-ignore lint/suspicious/noConsole: diagnostic
+  console.log(`[Contact API] Lead email sent — ID: ${leadResult.id}`);
+
+  // ── 2. Auto-reply to the sender ────────────────────────────────────────────
+  const firstName = data.name.split(' ')[0] ?? data.name;
+  try {
+    const replyResult = await resendPost(apiKey, {
+      from: fromEmail,
+      to: data.email,
+      subject: `${firstName}, we received your Thrivaxis inquiry`,
+      html: buildAutoReplyEmail(data),
+    });
+
+    if (!replyResult.id) {
+      console.warn('[Contact API] Auto-reply rejected by Resend:', replyResult);
+    } else {
+      // biome-ignore lint/suspicious/noConsole: diagnostic
+      console.log(`[Contact API] Auto-reply sent — ID: ${replyResult.id}`);
+    }
+  } catch (err) {
+    // Non-fatal — lead notification already succeeded
+    console.warn('[Contact API] Auto-reply network error (non-fatal):', err);
+  }
+
+  return NextResponse.json({ ok: true });
 }
