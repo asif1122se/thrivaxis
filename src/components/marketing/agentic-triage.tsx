@@ -52,6 +52,7 @@ export function AgenticTriage() {
           company_website: honeypot.trim() ? honeypot.trim() : undefined,
         }),
       });
+      console.log("API Key exists:", !!process.env.RESEND_API_KEY);
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
