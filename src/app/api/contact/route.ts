@@ -108,6 +108,8 @@ export async function POST(request: Request) {
 
   // Environment
   const apiKey = process.env.RESEND_API_KEY?.trim();
+  console.warn('[Contact API] API KEY:', apiKey);
+
   const fromEmail = sanitiseFrom(
     process.env.RESEND_FROM_EMAIL ?? `Thrivaxis <${site.contact.email}>`,
   );
