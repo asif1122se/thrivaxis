@@ -14,8 +14,6 @@ export function AgenticTriage() {
   const [message, setMessage] = useState('');
   const [tier, setTier] = useState<TierType>('production');
 
-  // Hidden honeypot — real visitors never fill this in.
-  const [honeypot, setHoneypot] = useState('');
   const [submitState, setSubmitState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [submitError, setSubmitError] = useState('');
 
@@ -24,7 +22,6 @@ export function AgenticTriage() {
     setEmail('');
     setMessage('');
     setTier('production');
-    setHoneypot('');
     setSubmitState('idle');
     setSubmitError('');
   };
@@ -49,10 +46,8 @@ export function AgenticTriage() {
           message: message.trim(),
           tier,
           compliance: ['none'],
-          company_website: honeypot.trim() ? honeypot.trim() : undefined,
         }),
       });
-      console.log("API Key exists:", !!process.env.RESEND_API_KEY);
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -190,18 +185,7 @@ export function AgenticTriage() {
               </div>
             </div>
 
-            {/* Honeypot field - hidden from real visitors */}
-            <input
-              type="text"
-              name="website_url_hp"
-              value={honeypot}
-              onChange={(e) => setHoneypot(e.target.value)}
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              className="pointer-events-none absolute size-px overflow-hidden opacity-0"
-              style={{ left: '-9999px' }}
-            />
+
 
             {/* Message input */}
             <div className="flex flex-col gap-1.5">

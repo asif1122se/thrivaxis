@@ -99,16 +99,11 @@ export async function POST(request: Request) {
     );
   }
 
-  // Honeypot check
-  const { company_website: honeypot, ...data } = parsed.data;
-  if (honeypot && typeof honeypot === 'string' && honeypot.trim().length > 0) {
-    console.warn('[Contact API] Honeypot triggered — skipping dispatch.');
-    return NextResponse.json({ ok: true });
-  }
+  const data = parsed.data;
 
   // Environment
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  console.warn('[Contact API] API KEY:', apiKey);
+
 
   const fromEmail = sanitiseFrom(
     process.env.RESEND_FROM_EMAIL ?? `Thrivaxis <${site.contact.email}>`,

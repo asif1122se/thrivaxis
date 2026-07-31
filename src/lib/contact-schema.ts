@@ -8,8 +8,6 @@ export const contactSchema = z
     bottleneck: z.string().trim().min(5).max(4000).optional(),
     compliance: z.array(z.enum(['hipaa', 'soc2', 'gdpr', 'none'])).default(['none']),
     tier: z.enum(['prototype', 'production', 'enterprise']).default('production'),
-    // Hidden honeypot field — real visitors never fill this in.
-    company_website: z.string().optional().or(z.literal('')),
   })
   .refine((data) => Boolean(data.message || data.bottleneck), {
     message: 'Message is required',
