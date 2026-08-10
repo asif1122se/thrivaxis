@@ -64,7 +64,7 @@ export function AgenticTriage() {
   };
 
   return (
-    <div className="relative w-full max-w-3xl rounded-3xl border border-border bg-surface-2/40 p-6 shadow-glow backdrop-blur-md md:p-10">
+    <div className="relative w-full max-w-3xl rounded-3xl border border-border bg-surface-2/40 p-4 sm:p-6 md:p-10 shadow-glow backdrop-blur-md">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between border-border border-b pb-4">
         <div className="flex items-center gap-1.5">
@@ -72,7 +72,7 @@ export function AgenticTriage() {
           <span className="h-2 w-2 rounded-full bg-warm/60" />
           <span className="h-2 w-2 rounded-full bg-accent/60" />
         </div>
-        <span className="font-mono text-label text-muted uppercase tracking-widest">
+        <span className="truncate font-mono text-[10px] sm:text-label text-muted uppercase tracking-wider sm:tracking-widest">
           THRIVAXIS — DIRECT_INTAKE
         </span>
         <div className="h-2 w-2" />
@@ -89,11 +89,11 @@ export function AgenticTriage() {
             className="flex flex-col gap-6 py-4"
           >
             <div className="flex items-center gap-3 text-accent">
-              <div className="flex size-10 items-center justify-center rounded-full border border-accent/30 bg-accent/10">
+              <div className="flex size-10 items-center justify-center rounded-full border border-accent/30 bg-accent/10 shrink-0">
                 <Check className="size-5 text-accent" />
               </div>
               <div>
-                <h3 className="font-display text-h2 text-ink tracking-tight">
+                <h3 className="font-display text-h3 sm:text-h2 text-ink tracking-tight">
                   Message Transmitted.
                 </h3>
                 <span className="font-mono text-accent text-caption uppercase tracking-wider">
@@ -102,7 +102,7 @@ export function AgenticTriage() {
               </div>
             </div>
 
-            <p className="text-body text-muted leading-relaxed">
+            <p className="text-body-sm sm:text-body text-muted leading-relaxed">
               Thank you, <span className="font-medium text-ink">{name}</span>. We've received your
               message and sent a confirmation email to{' '}
               <span className="font-medium text-ink">{email}</span>. A member of the Thrivaxis
@@ -113,14 +113,14 @@ export function AgenticTriage() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-5 py-3 font-mono text-caption text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+                className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-full border border-border bg-surface px-5 py-3 font-mono text-caption text-muted transition-colors hover:bg-surface-2 hover:text-ink"
               >
                 <RefreshDouble className="size-4" />
                 SEND ANOTHER MESSAGE
               </button>
               <a
                 href={`mailto:${site.contact.email}`}
-                className="font-mono text-caption text-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
+                className="text-center sm:text-right font-mono text-caption text-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
               >
                 Direct email: {site.contact.email}
               </a>
@@ -134,13 +134,13 @@ export function AgenticTriage() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
             onSubmit={handleSubmit}
-            className="flex flex-col gap-6"
+            className="flex flex-col gap-5 sm:gap-6"
           >
-            <div className="space-y-2">
-              <h3 className="font-display text-h1 text-ink tracking-tight">
+            <div className="space-y-1.5 sm:space-y-2">
+              <h3 className="font-display text-h2 sm:text-h1 text-ink tracking-tight">
                 Get in touch with our team.
               </h3>
-              <p className="text-body text-muted leading-relaxed">
+              <p className="text-body-sm sm:text-body text-muted leading-relaxed">
                 Submit your inquiry directly below. No extra steps or interactive prompts required.
               </p>
             </div>
@@ -162,7 +162,7 @@ export function AgenticTriage() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Alex Mercer"
                   autoComplete="name"
-                  className="w-full rounded-xl border border-border bg-bg p-4 font-mono text-body-sm text-ink outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/40"
+                  className="w-full rounded-xl border border-border bg-bg p-3.5 sm:p-4 font-mono text-base sm:text-body-sm text-ink outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/40"
                 />
               </div>
               <div className="flex flex-col gap-1.5">
@@ -180,12 +180,10 @@ export function AgenticTriage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@company.com"
                   autoComplete="email"
-                  className="w-full rounded-xl border border-border bg-bg p-4 font-mono text-body-sm text-ink outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/40"
+                  className="w-full rounded-xl border border-border bg-bg p-3.5 sm:p-4 font-mono text-base sm:text-body-sm text-ink outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/40"
                 />
               </div>
             </div>
-
-
 
             {/* Message input */}
             <div className="flex flex-col gap-1.5">
@@ -202,7 +200,7 @@ export function AgenticTriage() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Tell us about your project scope, engineering requirements, or operational challenges..."
                 rows={4}
-                className="w-full rounded-xl border border-border bg-bg p-4 font-mono text-body-sm text-ink outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/40"
+                className="w-full rounded-xl border border-border bg-bg p-3.5 sm:p-4 font-mono text-base sm:text-body-sm text-ink outline-none transition-all focus:border-accent/40 focus:ring-1 focus:ring-accent/40"
               />
             </div>
 
@@ -211,7 +209,7 @@ export function AgenticTriage() {
               <span className="font-mono text-caption text-muted uppercase tracking-wider">
                 Target Timeline (Optional)
               </span>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {[
                   { id: 'prototype', label: 'Prototype (30 Days)' },
                   { id: 'production', label: 'Production (1-3 Mo)' },
@@ -251,7 +249,7 @@ export function AgenticTriage() {
                 disabled={
                   submitState === 'sending' || !name.trim() || !email.trim() || !message.trim()
                 }
-                className="inline-flex items-center justify-center gap-3 rounded-full bg-accent px-8 py-3.5 font-medium text-bg text-sm shadow-[0_0_40px_-5px_var(--color-accent-glow)] transition-all duration-300 hover:scale-102 hover:bg-accent-strong disabled:pointer-events-none disabled:opacity-50"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-3 rounded-full bg-accent px-8 py-3.5 font-medium text-bg text-sm shadow-[0_0_40px_-5px_var(--color-accent-glow)] transition-all duration-300 hover:scale-102 hover:bg-accent-strong disabled:pointer-events-none disabled:opacity-50"
               >
                 {submitState === 'sending' ? (
                   <span>Sending Message...</span>
@@ -265,7 +263,7 @@ export function AgenticTriage() {
 
               <a
                 href={`mailto:${site.contact.email}`}
-                className="self-center font-mono text-caption text-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
+                className="text-center sm:text-right font-mono text-caption text-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
               >
                 or email directly: {site.contact.email}
               </a>

@@ -47,7 +47,7 @@ export function KineticTypography({
   };
 
   return (
-    <Component className={cn('flex flex-wrap overflow-hidden', className)}>
+    <Component className={cn('flex flex-wrap py-1', className)}>
       <motion.div
         // biome-ignore lint/suspicious/noExplicitAny: framer-motion variants
         variants={container as any}

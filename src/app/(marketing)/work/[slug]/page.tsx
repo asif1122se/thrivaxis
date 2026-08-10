@@ -44,20 +44,20 @@ export default async function CaseStudyStubPage({ params }: { params: Promise<{ 
   if (!concept) notFound();
 
   return (
-    <Section padding="xl" className="pt-32">
+    <Section padding="xl" className="pt-20 sm:pt-28 md:pt-32">
       <Container width="md">
         <Stack gap="xl">
           <Stack gap="md">
             <Tag tone="accent" withDot>
               {concept.industry}
             </Tag>
-            <h1 className="font-display text-display-lg leading-[1.02] tracking-tight sm:text-display-xl">
+            <h1 className="font-display text-display-md leading-[1.02] tracking-tight sm:text-display-lg lg:text-display-xl">
               {concept.title}
             </h1>
-            <p className="font-serif text-accent text-display-sm italic leading-tight">
+            <p className="font-serif text-accent text-display-xs sm:text-display-sm italic leading-tight">
               {concept.headline}
             </p>
-            <p className="text-body-lg text-muted">{concept.summary}</p>
+            <p className="text-body sm:text-body-lg text-muted">{concept.summary}</p>
           </Stack>
           <Stack gap="sm">
             <Eyebrow>Phase 4 — coming soon</Eyebrow>

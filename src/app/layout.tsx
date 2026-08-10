@@ -6,7 +6,6 @@ import { Cursor } from '@/components/primitives/cursor';
 import { LenisProvider } from '@/components/providers/lenis-provider';
 import { SiteHeader } from '@/components/site-header';
 import { GlobalPreloader } from '@/components/thrivaxis-loader';
-import { AgenticNav } from '@/components/ui/agentic-nav';
 import { cn } from '@/lib/cn';
 import { fontVariables } from '@/lib/fonts';
 import { site } from '@/lib/site';
@@ -99,7 +98,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main id="main" className="flex flex-1 flex-col">
             {children}
           </main>
-          <AgenticNav />
         </LenisProvider>
         <Analytics />
         <SpeedInsights />

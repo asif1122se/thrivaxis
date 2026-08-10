@@ -15,14 +15,14 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
           </div>
         </Container>
       </header>
-      <Container width="md" className="prose-legal flex-1 py-16 sm:py-24">
+      <Container width="md" className="prose-legal flex-1 py-10 sm:py-16 md:py-24">
         {children}
       </Container>
       <footer className="border-border border-t">
         <Container width="md">
           <nav
             aria-label="Legal pages"
-            className="flex flex-wrap items-center gap-x-6 gap-y-3 py-6 text-caption text-muted"
+            className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2.5 sm:gap-y-3 py-6 text-caption text-muted"
           >
             <Link href="/privacy" className="hover:text-ink">
               Privacy

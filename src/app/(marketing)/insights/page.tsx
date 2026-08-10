@@ -25,15 +25,15 @@ const drafts = [
 
 export default function InsightsPage() {
   return (
-    <Section padding="xl" className="pt-32">
+    <Section padding="xl" className="pt-20 sm:pt-28 md:pt-32">
       <Container width="xl">
         <Stack gap="xl">
           <Stack gap="md" className="max-w-3xl">
             <Eyebrow>Insights</Eyebrow>
-            <h1 className="font-display text-display-lg tracking-tight sm:text-display-xl">
+            <h1 className="font-display text-display-md tracking-tight sm:text-display-lg lg:text-display-xl">
               Field notes from a code-native studio.
             </h1>
-            <p className="text-body-lg text-muted">
+            <p className="text-body sm:text-body-lg text-muted">
               An MDX-driven writing pipeline ships in Phase 6. Three drafts in the queue:
             </p>
           </Stack>
@@ -41,13 +41,13 @@ export default function InsightsPage() {
             {drafts.map((draft) => (
               <li
                 key={draft.title}
-                className="group flex flex-col gap-3 py-8 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:gap-8"
+                className="group flex flex-col gap-3 py-6 sm:py-8 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:gap-8"
               >
-                <Tag tone="accent" withDot size="sm" className="sm:w-32">
+                <Tag tone="accent" withDot size="sm" className="w-fit sm:w-32">
                   {draft.tag}
                 </Tag>
                 <div className="flex flex-1 flex-col gap-1">
-                  <h2 className="font-display text-h1 tracking-tight transition-colors group-hover:text-accent">
+                  <h2 className="font-display text-h2 sm:text-h1 tracking-tight transition-colors group-hover:text-accent">
                     {draft.title}
                   </h2>
                   <p className="text-body-sm text-muted">{draft.excerpt}</p>

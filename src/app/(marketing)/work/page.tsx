@@ -33,26 +33,26 @@ const concepts = [
 
 export default function WorkIndexPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-bg pt-32 pb-24 text-ink">
-      <div className="container mx-auto max-w-7xl px-6">
-        <div className="mb-24 max-w-3xl">
+    <div className="relative min-h-screen overflow-hidden bg-bg pt-20 sm:pt-28 md:pt-32 pb-16 sm:pb-24 text-ink">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-12 sm:mb-24 max-w-3xl">
           <KineticTypography
             as="h1"
             text="System Output."
-            className="font-display text-display-lg tracking-tighter lg:text-display-2xl"
+            className="font-display text-display-md tracking-tighter sm:text-display-lg lg:text-display-2xl"
           />
-          <p className="mt-6 text-body-lg text-muted">
+          <p className="mt-4 sm:mt-6 text-body sm:text-body-lg text-muted">
             We don't build toys. We build scalable, intelligent architectures that solve complex
             business problems. Here is a sample of our recent deployments.
           </p>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-1">
+        <div className="grid gap-8 sm:gap-12 lg:grid-cols-1">
           {concepts.map((c, i) => (
             <Link
               key={c.slug}
               href={`/work/${c.slug}`}
-              className={`group flex flex-col ${i % 2 !== 0 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-8 rounded-3xl border border-border bg-surface-2 p-8 transition-all hover:border-accent/50 hover:bg-surface hover:shadow-[0_0_40px_var(--color-accent-soft)]`}
+              className={`group flex flex-col ${i % 2 !== 0 ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-6 sm:gap-8 rounded-3xl border border-border bg-surface-2 p-5 sm:p-8 transition-all hover:border-accent/50 hover:bg-surface hover:shadow-[0_0_40px_var(--color-accent-soft)]`}
             >
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-border lg:w-3/5">
                 <Image
@@ -62,13 +62,13 @@ export default function WorkIndexPage() {
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
-              <div className="flex w-full flex-col gap-4 px-4 lg:w-2/5">
-                <span className="font-bold text-accent text-sm uppercase tracking-widest">
+              <div className="flex w-full flex-col gap-3 sm:gap-4 px-2 sm:px-4 lg:w-2/5">
+                <span className="font-bold text-accent text-xs sm:text-sm uppercase tracking-widest">
                   {c.industry}
                 </span>
-                <h2 className="font-display text-display-sm tracking-tight">{c.title}</h2>
-                <p className="text-body-lg text-muted">{c.tagline}</p>
-                <div className="mt-4 flex -translate-x-4 items-center font-medium text-accent text-sm opacity-0 transition-opacity duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                <h2 className="font-display text-h1 sm:text-display-sm tracking-tight">{c.title}</h2>
+                <p className="text-body-sm sm:text-body-lg text-muted">{c.tagline}</p>
+                <div className="mt-2 sm:mt-4 flex items-center font-medium text-accent text-sm opacity-100 translate-x-0 lg:opacity-0 lg:-translate-x-4 transition-all duration-300 lg:group-hover:translate-x-0 lg:group-hover:opacity-100">
                   View Architecture →
                 </div>
               </div>

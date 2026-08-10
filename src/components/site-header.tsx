@@ -44,7 +44,7 @@ export function SiteHeader() {
           : 'border-transparent border-b bg-transparent',
       )}
     >
-      <div className="mx-auto flex h-16 w-full max-w-[88rem] items-center justify-between px-6 sm:px-8 lg:px-12">
+      <div className="mx-auto flex h-16 w-full max-w-[88rem] items-center justify-between px-4 sm:px-8 lg:px-12">
         {/* Logo — uses static PNG lockup */}
         <Link href="/" aria-label={`${site.name} home`} className="flex items-center">
           <Image
@@ -52,7 +52,7 @@ export function SiteHeader() {
             alt={site.name}
             width={160}
             height={60}
-            className="h-12 w-auto object-contain"
+            className="h-9 sm:h-10 md:h-12 w-auto object-contain"
             priority
           />
         </Link>
@@ -114,7 +114,7 @@ export function SiteHeader() {
         id="mobile-menu"
         aria-hidden={!open}
         className={cn(
-          'absolute inset-x-0 top-full border-border border-b bg-bg/95 backdrop-blur-xl md:hidden',
+          'absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-border border-b bg-bg/95 backdrop-blur-xl md:hidden',
           'transition-[opacity,transform,visibility] duration-200 ease-out',
           open
             ? 'pointer-events-auto visible translate-y-0 opacity-100'

@@ -19,7 +19,7 @@ interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
 export function Container({ width = 'lg', className, children, ...rest }: ContainerProps) {
   return (
     <div
-      className={cn('mx-auto w-full px-6 sm:px-8 lg:px-12', widthClass[width], className)}
+      className={cn('mx-auto w-full px-4 sm:px-8 lg:px-12', widthClass[width], className)}
       {...rest}
     >
       {children}
