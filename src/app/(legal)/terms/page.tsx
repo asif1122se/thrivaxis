@@ -56,10 +56,27 @@ export default function TermsPage() {
           your request, service needs and appointment times.
         </Term>
         <Term label="How you opt in">
-          By calling our business number, you request that we contact you back. A voice message on
-          the missed call tells you a text message will follow. We text only the number that called
-          us.
+          You call our business number. If we miss your call, an automated voice message asks
+          whether you would like a text message and tells you to press 1 to agree. We text you only
+          if you press 1, and only at the number you called from. Your keypress is recorded as your
+          consent.
         </Term>
+        <div id="consent-script" className="flex scroll-mt-24 flex-col gap-2">
+          <p>
+            <strong className="text-ink">Voice consent script</strong> (played word for word on a
+            missed call):
+          </p>
+          <blockquote className="border-border border-l-2 pl-4 italic">
+            &ldquo;Sorry we missed your call at {'{business name}'}. To get a text message from us
+            so we can help you faster, press 1 now. Message and data rates may apply. You can reply
+            STOP at any time to opt out.&rdquo;
+          </blockquote>
+          <p>
+            If you press 1, you hear: &ldquo;Thank you. We are sending you a text message
+            now.&rdquo; If you press nothing, you hear: &ldquo;No problem. Please call us again
+            anytime. Goodbye.&rdquo; and no text is sent.
+          </p>
+        </div>
         <Term label="Message frequency">
           Varies based on your conversation with us, typically 1 to 5 messages per inquiry.
         </Term>

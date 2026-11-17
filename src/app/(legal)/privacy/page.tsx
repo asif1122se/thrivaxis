@@ -1,5 +1,6 @@
 // Draft for lawyer review. The "SMS and mobile information" section is required
-// for US A2P 10DLC carrier approval; keep its first sentence word for word.
+// for US A2P 10DLC carrier approval. Twilio's reviewers look for its first
+// sentence word for word ("We do not sell or share your SMS opt-in data...").
 import Link from 'next/link';
 import { LegalList, LegalSection } from '@/components/legal/legal-prose';
 import { Eyebrow } from '@/components/primitives';
@@ -66,6 +67,13 @@ export default function PrivacyPage() {
       </LegalSection>
 
       <LegalSection title="SMS and mobile information">
+        <p>
+          <strong className="text-ink">
+            We do not sell or share your SMS opt-in data or personal information with third parties
+            for marketing purposes.
+          </strong>{' '}
+          This applies to all text messages sent by Thrivaxis LLC.
+        </p>
         <p>
           <strong className="text-ink">
             No mobile information will be shared with third parties or affiliates for marketing or
